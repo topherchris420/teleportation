@@ -1,4 +1,9 @@
 qiskit
-matplotlib
+qiskit-aer
 numpy
 scipy
+matplotlib
+seaborn
+jupyter
+ipywidgets
+numba
