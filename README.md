@@ -1,5 +1,5 @@
 # Quantum Localization: Vibrational Variables as Location
-## R.A.I.N Lab Research Demon from Vers3Dynamics 
+## R.A.I.N. Lab Research Demon from Vers3Dynamics 
 
 **Created by Vers3Dynamics**  
 **Strategic Research Initiative**
