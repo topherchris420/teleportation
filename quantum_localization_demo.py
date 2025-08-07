@@ -227,7 +227,7 @@ class QuantumEnhancedRangingProtocol:
         
         return qc
 
-    def quantum_phase_estimation(self, target_distance: float, 
+        def quantum_phase_estimation(self, target_distance: float, 
                                 wavelength: float = 1.0,
                                 num_shots: int = 10000) -> Dict:
         """
@@ -241,26 +241,26 @@ class QuantumEnhancedRangingProtocol:
         Returns:
             Ranging results with quantum advantage metrics
         """
-        # Phase accumulated over round trip: φ = 4π × distance / wavelength
+        
         true_phase = 4 * np.pi * target_distance / wavelength
         
-        # Add small amount of noise to simulate realistic conditions
+        
         measured_phase = true_phase + np.random.normal(0, 0.01)
         
         # Create quantum sensing circuit
         qc = self.create_ghz_sensing_circuit(measured_phase / self.num_qubits)
         
-        # Execute circuit
+        
         job = execute(qc, self.simulator, shots=num_shots)
         result = job.result()
         counts = result.get_counts()
         
-        # Analyze measurement results
+        
         total_shots = sum(counts.values())
         prob_0 = counts.get('0' * self.num_qubits, 0) / total_shots
         prob_1 = counts.get('1' * self.num_qubits, 0) / total_shots
         
-        # Phase estimation from measurement probabilities
+        
         if prob_0 > 0 and prob_1 > 0:
             contrast = abs(prob_0 - prob_1)
             estimated_phase = np.arccos(contrast)
@@ -269,6 +269,31 @@ class QuantumEnhancedRangingProtocol:
         
         # Convert back to distance
         estimated_distance = estimated_phase * wavelength / (4 * np.pi)
+        
+        # Calculate quantum advantage metrics
+        classical_uncertainty = wavelength / (4 * np.pi * np.sqrt(num_shots))  # Shot noise limit
+        quantum_uncertainty = wavelength / (4 * np.pi * self.num_qubits * np.sqrt(num_shots))  # Heisenberg limit
+        
+        quantum_advantage = classical_uncertainty / quantum_uncertainty
+        
+        ranging_results = {
+            'target_distance': target_distance,
+            'estimated_distance': estimated_distance,
+            'ranging_error': abs(estimated_distance - target_distance),
+            'true_phase': true_phase,
+            'estimated_phase': estimated_phase,
+            'classical_uncertainty': classical_uncertainty,
+            'quantum_uncertainty': quantum_uncertainty,
+            'quantum_advantage_factor': quantum_advantage,
+            'measurement_counts': counts,
+            'heisenberg_scaling': True if self.num_qubits > 2 else False
+        }
+        
+        logger.info(f"Quantum ranging complete: distance={estimated_distance:.6f}, "
+                   f"error={ranging_results['ranging_error']:.6f}, "
+                   f"quantum_advantage={quantum_advantage:.2f}x")
+        
+        return ranging_results
         
         # Calculate quantum advantage metrics
         classical_uncertainty = wavelength / (4 * np.pi * np.sqrt(num_shots))  # Shot noise limit
