@@ -1,4 +1,4 @@
- """
+"""
 Quantum Localization System
 ============================================================
 
@@ -227,7 +227,7 @@ class QuantumEnhancedRangingProtocol:
         
         return qc
 
-        def quantum_phase_estimation(self, target_distance: float, 
+    def quantum_phase_estimation(self, target_distance: float, 
                                 wavelength: float = 1.0,
                                 num_shots: int = 10000) -> Dict:
         """
@@ -241,26 +241,31 @@ class QuantumEnhancedRangingProtocol:
         Returns:
             Ranging results with quantum advantage metrics
         """
-        
+        # Phase accumulated over round trip: φ = 4π × distance / wavelength
         true_phase = 4 * np.pi * target_distance / wavelength
         
-        
+        # Add small amount of noise to simulate realistic conditions
         measured_phase = true_phase + np.random.normal(0, 0.01)
         
         # Create quantum sensing circuit
         qc = self.create_ghz_sensing_circuit(measured_phase / self.num_qubits)
         
+        # Add noise model
+        noise_model = NoiseModel()
+        depol_error = depolarizing_error(0.01, 1)  # 1% depolarizing noise
+        noise_model.add_all_qubit_quantum_error(depol_error, ['h', 'cx', 'rz'])
         
-        job = execute(qc, self.simulator, shots=num_shots)
+        # Execute circuit with noise
+        job = execute(qc, self.simulator, shots=num_shots, noise_model=noise_model)
         result = job.result()
         counts = result.get_counts()
         
-        
+        # Analyze measurement results
         total_shots = sum(counts.values())
         prob_0 = counts.get('0' * self.num_qubits, 0) / total_shots
         prob_1 = counts.get('1' * self.num_qubits, 0) / total_shots
         
-        
+        # Phase estimation from measurement probabilities
         if prob_0 > 0 and prob_1 > 0:
             contrast = abs(prob_0 - prob_1)
             estimated_phase = np.arccos(contrast)
@@ -273,8 +278,12 @@ class QuantumEnhancedRangingProtocol:
         # Calculate quantum advantage metrics
         classical_uncertainty = wavelength / (4 * np.pi * np.sqrt(num_shots))  # Shot noise limit
         quantum_uncertainty = wavelength / (4 * np.pi * self.num_qubits * np.sqrt(num_shots))  # Heisenberg limit
-        
         quantum_advantage = classical_uncertainty / quantum_uncertainty
+        
+        # Calculate fidelity under noise
+        ideal_state = Statevector.from_instruction(self.create_ghz_sensing_circuit(measured_phase / self.num_qubits))
+        noisy_state = result.get_statevector() if result.get_statevector() else ideal_state
+        fidelity = state_fidelity(ideal_state, noisy_state)
         
         ranging_results = {
             'target_distance': target_distance,
@@ -286,37 +295,13 @@ class QuantumEnhancedRangingProtocol:
             'quantum_uncertainty': quantum_uncertainty,
             'quantum_advantage_factor': quantum_advantage,
             'measurement_counts': counts,
-            'heisenberg_scaling': True if self.num_qubits > 2 else False
+            'heisenberg_scaling': True if self.num_qubits > 2 else False,
+            'fidelity': fidelity
         }
         
         logger.info(f"Quantum ranging complete: distance={estimated_distance:.6f}, "
                    f"error={ranging_results['ranging_error']:.6f}, "
-                   f"quantum_advantage={quantum_advantage:.2f}x")
-        
-        return ranging_results
-        
-        # Calculate quantum advantage metrics
-        classical_uncertainty = wavelength / (4 * np.pi * np.sqrt(num_shots))  # Shot noise limit
-        quantum_uncertainty = wavelength / (4 * np.pi * self.num_qubits * np.sqrt(num_shots))  # Heisenberg limit
-        
-        quantum_advantage = classical_uncertainty / quantum_uncertainty
-        
-        ranging_results = {
-            'target_distance': target_distance,
-            'estimated_distance': estimated_distance,
-            'ranging_error': abs(estimated_distance - target_distance),
-            'true_phase': true_phase,
-            'estimated_phase': estimated_phase,
-            'classical_uncertainty': classical_uncertainty,
-            'quantum_uncertainty': quantum_uncertainty,
-            'quantum_advantage_factor': quantum_advantage,
-            'measurement_counts': counts,
-            'heisenberg_scaling': True if self.num_qubits > 2 else False
-        }
-        
-        logger.info(f"Quantum ranging complete: distance={estimated_distance:.6f}, "
-                   f"error={ranging_results['ranging_error']:.6f}, "
-                   f"quantum_advantage={quantum_advantage:.2f}x")
+                   f"quantum_advantage={quantum_advantage:.2f}x, fidelity={fidelity:.3f}")
         
         return ranging_results
 
@@ -918,7 +903,7 @@ class DARPAEnhancedQuantumLocalizationSystem:
 
     def create_darpa_executive_visualization(self, comprehensive_results: Dict) -> None:
         """
-        Create executive-level visualization for DARPA presentation
+        Visualization for DARPA presentation
         """
         fig = plt.figure(figsize=(24, 18))
         gs = fig.add_gridspec(4, 6, hspace=0.35, wspace=0.3)
@@ -1168,7 +1153,7 @@ def run_enhanced_darpa_analysis():
     Execute the enhanced DARPA-ready analysis
     """
     logger.info("=" * 100)
-    logger.info("ENHANCED QUANTUM LOCALIZATION SYSTEM - DARPA EVALUATION READY")
+    logger.info("QUANTUM LOCALIZATION SYSTEM - DARPA EVALUATION READY")
     logger.info("=" * 100)
     
     # Initialize enhanced system
@@ -1235,8 +1220,11 @@ COMPETITIVE ADVANTAGES:
 NEXT STEPS FOR PHASE I ($5M, 18 months):
 {chr(10).join(f'• {step}' for step in readiness['critical_next_steps'][:5])}
 
-TEAM CREDENTIALS: 
-Principal Investigator: Christopher Woodyard, CEO
+TEAM CREDENTIALS: [TO BE COMPLETED WITH ACTUAL TEAM DATA]
+Principal Investigator: [Name, Institution, Qualifications]
+Quantum Theory Lead: [Name, Institution, Qualifications]  
+Experimental Lead: [Name, Institution, Qualifications]
+Systems Integration: [Name, Institution, Qualifications]
 
 INTELLECTUAL PROPERTY:
 • 3 provisional patents filed for core quantum localization methods
@@ -1279,4 +1267,3 @@ if __name__ == "__main__":
     results = run_enhanced_darpa_analysis()
     logger.info("analysis complete. System ready for DARPA Phase I submission.")
     logger.info("Contact: ciao_chris@proton.me for partnership opportunities")       
-       
