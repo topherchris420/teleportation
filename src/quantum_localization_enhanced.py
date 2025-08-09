@@ -95,15 +95,15 @@ class QuantumLocalizationSystem:
         qc.h(0)      # Hadamard on unknown state qubit
         qc.barrier()
         
-        # Measure Alice's qubits
-        qc.measure([0, 1], [0, 1])
+        # Bob's conditional operations based on Alice's internal state
+        qc.cx(1, 2)  # CNOT gate controlled by Alice's ancilla
+        qc.cz(0, 2)  # CZ gate controlled by Alice's original qubit
         qc.barrier()
+
+        # Alice measures her qubits to get classical bits
+        qc.measure([0, 1], [0, 1])
         
-        # Bob's conditional operations based on Alice's measurement
-        qc.cx(1, 2)  # Conditional X gate
-        qc.cz(0, 2)  # Conditional Z gate
-        
-        # Final measurement of Bob's qubit
+        # Bob measures his qubit to get the final state
         qc.measure(2, 2)
         
         return qc
@@ -139,21 +139,20 @@ class QuantumLocalizationSystem:
             qc_original = QuantumCircuit(1)
             qc_original.u(theta, phi, lam, 0)
             original_state = Statevector.from_instruction(qc_original)
+
+            # Simulate teleportation using statevector to get ideal fidelity
+            # We use the full circuit but without measurements for statevector simulation
+            params = {'theta': theta, 'phi': phi, 'lambda': lam}
+            qc_full = self.create_enhanced_teleportation_circuit(params)
             
-            # Simulate teleportation (using statevector to avoid measurement collapse)
-            qc_teleport = QuantumCircuit(3)
-            qc_teleport.u(theta, phi, lam, 0)  # Prepare target state
-            qc_teleport.h(1)                   # Create Bell pair
-            qc_teleport.cx(1, 2)
-            qc_teleport.cx(0, 1)               # Alice's operations
-            qc_teleport.h(0)
+            # Remove measurements for statevector simulation
+            qc_sv = qc_full.remove_final_measurements(inplace=False)
             
-            # After Alice's measurement, Bob's qubit should contain the teleported state
-            # For ideal case, we calculate expected final state
-            teleported_state = Statevector.from_instruction(qc_teleport)
+            # Get the final statevector
+            final_statevector = Statevector.from_instruction(qc_sv)
             
-            # Extract Bob's qubit state (trace out Alice's qubits)
-            bob_state = partial_trace(teleported_state, [0, 1])
+            # The teleported state is on qubit 2. We trace out qubits 0 and 1.
+            bob_state = partial_trace(final_statevector, [0, 1])
             
             # Calculate fidelity
             fidelity = state_fidelity(original_state, bob_state)
@@ -535,7 +534,7 @@ Analysis Parameters: Grid Resolution = {self.grid_size}x{self.grid_size}, Space 
         
         return report
 
-def run_darpa_analysis():
+def run_technical_simulation():
     """
     Execute comprehensive analysis of quantum localization system
     """
@@ -582,5 +581,5 @@ def run_darpa_analysis():
 
 if __name__ == "__main__":
     logger.info("Initiating DARPA Quantum Localization Analysis")
-    results = run_darpa_analysis()
+    results = run_technical_simulation()
     logger.info("Analysis complete. System ready for DARPA evaluation.")
