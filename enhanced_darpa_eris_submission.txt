@@ -24,7 +24,7 @@ KEY IMPROVEMENTS IN THIS ENHANCED SUBMISSION:
 
 QUANTIFIED MILITARY PROBLEM SCOPE:
 The GPS vulnerability crisis represents a 2.5 billion dollar
-annual impact to DoD operations, with 14,850 documented
+annual impact on DoD operations, with 14,850 documented
 jamming incidents and 2,340 spoofing incidents in 2023 alone.
 
 AFFECTED MILITARY PLATFORMS:
@@ -90,32 +90,32 @@ are encoded in quantum harmonic oscillator basis states, enabling:
 ====================================
 
 PRINCIPAL INVESTIGATOR: Christopher Woodyard
-Current Experience: 3 years quantum systems
+Current Experience: 3 years of quantum systems
 Publications: 0 peer-reviewed (honest assessment)
 Patents: 0 relevant patents
 Security Clearance: None (Secret clearable)
 
 ACKNOWLEDGED CAPABILITY GAPS & MITIGATION:
 Current Limitations:
-• Limited quantum hardware experience (mitigate via national lab partnerships)
+• Limited quantum hardware experience (to be mitigated through a targeted national lab partnership strategy)
 • No prior government contracting experience (mitigate via prime contractor teaming)
 • Small team size for complex project (mitigate via strategic hiring plan)
 • Limited security clearance depth (mitigate via early clearance processing)
 
 TEAM DEVELOPMENT STRATEGY:
 Phase I Team Expansion (18 months):
-├── Quantum Hardware Lead: MIT Lincoln Lab partnership or IBM Quantum alumnus
-├── Navigation Systems Engineer: Retired Navy/Air Force navigation specialist
-├── Systems Integration Engineer: Defense aerospace background (Lockheed/Raytheon)
-└── Quantum Software Architect: Qiskit/Cirq expert from quantum computing startup
+├── AI Quantum Hardware Lead: MIT Lincoln Lab partnership or IBM Quantum alumnus
+├── AI Navigation Systems Engineer: Retired Navy/Air Force navigation specialist
+├── AI Systems Integration Engineer: Defense aerospace background (Lockheed/Raytheon)
+└── AI Quantum Software Architect: Qiskit/Cirq expert from quantum computing startup
 
 Advisory Board Engagement:
-├── Technical Advisor: University quantum sensing professor (10 hrs/month)
-├── Military Advisor: Retired flag officer with navigation expertise (5 hrs/month)
-└── Industry Advisor: Senior defense contractor engineer (10 hrs/month)
+├── AI Technical Advisor: University quantum sensing professor (10 hrs/month)
+├── AI Military Advisor: Retired flag officer with navigation expertise (5 hrs/month)
+└── AI Industry Advisor: Senior defense contractor engineer (10 hrs/month)
 
 RISK MITIGATION FOR TEAM LIMITATIONS:
-• Partnership agreements with MIT Lincoln Lab for quantum hardware expertise
+• Pursue partnership agreements with national labs, such as MIT Lincoln Lab, to secure quantum hardware expertise
 • Subcontracting relationships with established defense contractors
 • Competitive compensation packages including equity participation
 • Early security clearance processing for key personnel
