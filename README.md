@@ -4,10 +4,6 @@
 
 Created by **Vers3Dynamics** (Christopher Woodyard)
 
-**Strategic Research Initiative**  
-**Prepared for**: DARPA ERIS Program Submission  
-**Security Classification**: UNCLASSIFIED  
-**Distribution Statement**: Approved for public release; distribution unlimited   
 
 ## 🚀 Try the Demo
 
