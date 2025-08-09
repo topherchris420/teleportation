@@ -160,6 +160,7 @@ class RealisticQuantumSystem:
         # Measurement error
         readout_error_model = [[1-self.readout_error, self.readout_error],
                               [self.readout_error, 1-self.readout_error]]
-        noise_model.add_readout_error(readout_error_model, [0, 1, 2])
+        for i in range(3):
+            noise_model.add_readout_error(readout_error_model, [i])
 
         return noise_model
