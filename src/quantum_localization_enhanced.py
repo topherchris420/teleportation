@@ -344,7 +344,12 @@ class QuantumLocalizationSystem:
         # 1. Teleportation Fidelity Analysis
         ax1 = fig.add_subplot(gs[0, 0])
         fidelities = teleportation_results['fidelities']
-        ax1.hist(fidelities, bins=50, alpha=0.7, color='skyblue', edgecolor='black')
+        # Handle case where all fidelities are the same, causing hist() to fail
+        if len(fidelities) > 0 and np.max(fidelities) - np.min(fidelities) < 1e-9:
+            num_bins = 1
+        else:
+            num_bins = 50
+        ax1.hist(fidelities, bins=num_bins, alpha=0.7, color='skyblue', edgecolor='black')
         ax1.axvline(teleportation_results['mean_fidelity'], color='red', linestyle='--', 
                    label=f"Mean: {teleportation_results['mean_fidelity']:.4f}")
         ax1.set_xlabel('Teleportation Fidelity')

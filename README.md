@@ -80,9 +80,15 @@ ipywidgets>=7.6.0
 numba>=0.56.0
 ```
 
-## 🏗️ System Architecture Blueprint
+## 🏗️ Codebase Structure
 
-The complete quantum localization system architecture is shown in the following diagram:
+The project is organized into two main Python packages and a main script:
+
+-   **`quantum_localization_demo.py`**: The main entry point for running all simulations and analyses.
+-   **`src/`**: Contains the core scientific library (`QuantumLocalizationSystem`) for performing the quantum simulations.
+-   **`darpa_proposal_generator/`**: Contains the high-level logic for generating the DARPA proposal, including market analysis, team assessment, and report generation.
+
+The conceptual architecture of the system is shown in the following diagram:
 
 ```mermaid
 graph TB
@@ -200,49 +206,42 @@ This comprehensive blueprint shows the complete data flow from input coordinates
 - **Error handling and system monitoring**
 
 
-## 🔬 Code Implementation Examples
+## 🔬 Usage and Examples
 
-### Basic Quantum Localization Demo
+The main script `quantum_localization_demo.py` provides two modes of operation.
 
-To run the quick demo, simply execute the main script:
+### Quick Demo
+
+To run a quick demonstration of the core quantum teleportation fidelity, run the script without any arguments:
 ```bash
 python quantum_localization_demo.py
 ```
-This will run the `run_quick_demo()` function by default and output the results of the teleportation fidelity analysis.
+This will output the mean fidelity from a small number of simulation trials.
 
-### Advanced System Analysis
+### Full DARPA Analysis
 
-To run the full DARPA analysis pipeline, you need to uncomment the relevant lines in the `if __name__ == "__main__"` block of `quantum_localization_demo.py` and then run the script.
-
-```python
-# In quantum_localization_demo.py, modify the main block:
-
-if __name__ == "__main__":
-    print("DARPA ERIS: Quantum-Enhanced Navigation System")
-    print("=" * 70)
-
-    # To run the full enhanced analysis, uncomment the following lines:
-    try:
-        # Run enhanced comprehensive analysis
-        results = run_enhanced_darpa_analysis()
-
-        print(f"\n✓ Enhanced DARPA ERIS analysis complete")
-        # ... and so on
-    except Exception as e:
-        logger.error(f"Enhanced DARPA ERIS analysis failed: {str(e)}")
-
-```
-Then run the script:
+To run the full, enhanced analysis pipeline, which includes technical simulations, visualizations, and the generation of a complete DARPA-style proposal, use the `--full-analysis` flag:
 ```bash
-python quantum_localization_demo.py
+python quantum_localization_demo.py --full-analysis
 ```
+This will:
+1.  Run the core technical simulations from `src.quantum_localization_enhanced`.
+2.  Generate and display visualizations of the simulation results.
+3.  Print a technical report of the simulations to the console.
+4.  Run the high-level proposal analysis, comparing different quantum hardware platforms.
+5.  Generate and save a comprehensive DARPA submission report to `enhanced_darpa_eris_submission.txt`.
+6.  Save the detailed analysis data to `enhanced_analysis_data.json`.
 
-### Vibrational State Encoding
+### Using the Libraries
 
-This example demonstrates how to use the `QuantumLocalizationTheory` class to encode a position into a superposition of vibrational states.
+The refactored codebase allows for direct use of the underlying classes for custom analysis.
+
+#### Vibrational State Encoding
+
+This example demonstrates how to use the `QuantumLocalizationTheory` class from the `darpa_proposal_generator` module to encode a position into a superposition of vibrational states.
 
 ```python
-from quantum_localization_demo import QuantumLocalizationTheory
+from darpa_proposal_generator.theory import QuantumLocalizationTheory
 
 # Initialize the theoretical model
 theory = QuantumLocalizationTheory()
@@ -259,7 +258,7 @@ uncertainty = theory.theoretical_position_uncertainty(coeffs)
 print(f"Theoretical position uncertainty: {uncertainty:.4f}")
 ```
 
-### Quantum Teleportation Analysis
+#### Quantum Teleportation Analysis
 
 This example shows how to use the `QuantumLocalizationSystem` from the `src` module to analyze teleportation fidelity.
 
@@ -273,63 +272,6 @@ qls = QuantumLocalizationSystem(grid_size=64)
 results = qls.analyze_teleportation_fidelity(num_trials=200)
 
 print(f"Mean Teleportation Fidelity: {results['mean_fidelity']:.4f}")
-```
-
-### Complete DARPA Analysis Pipeline
-
-The complete DARPA analysis is executed by the `run_enhanced_darpa_analysis` function in `quantum_localization_demo.py`.
-
-```python
-from quantum_localization_demo import run_enhanced_darpa_analysis
-
-# Execute full production analysis
-results = run_enhanced_darpa_analysis()
-
-# Access results
-best_system = results['best_system']
-darpa_score = results['darpa_score']
-darpa_report = results['enhanced_report']
-
-print(f"Best Platform: {best_system.platform}")
-print(f"DARPA Score: {darpa_score:.2f}")
-
-# Print full DARPA report
-print("\n" + "="*80)
-print(darpa_report)
-```
-
-### Custom Phase Space Localization
-
-```python
-import numpy as np
-from src.quantum_localization_enhanced import QuantumLocalizationSystem
-
-# Initialize advanced system
-qls = QuantumLocalizationSystem(grid_size=256, space_bounds=(-10, 10))
-
-# Define custom vibrational modes
-freq_modes = [(1.5, 0.5), (2.0, 1.5), (0.8, 2.2), (3.0, 0.3)]
-coupling_strengths = [1.0, 0.9, 0.7, 0.5]
-
-# Analyze vibrational localization
-localization_results = qls.vibrational_localization_analysis(
-    freq_modes=freq_modes,
-    coupling_strengths=coupling_strengths
-)
-
-print(f"Position Expected: {localization_results['position_expected']}")
-print(f"Position Uncertainty: {localization_results['position_uncertainty']}")
-print(f"Localization Measure: {localization_results['localization_measure']:.6f}")
-
-# Perform coordinate transformation
-target_pos = (2.5, -1.8)
-transform_results = qls.phase_encoding_coordinate_transform(
-    target_position=target_pos,
-    base_frequency=(1.2, 0.8)
-)
-
-print(f"Transformation Error: {transform_results['transformation_error']:.6f}")
-print(f"Overlap Fidelity: {transform_results['overlap_fidelity']:.6f}")
 ```
 
 ## 📊 Performance Benchmarks
