@@ -1,4 +1,4 @@
-      """
+"""
 Quantum-Enhanced Navigation System (QENS)
 ==================================================
 
@@ -14,16 +14,18 @@ import matplotlib.pyplot as plt
 from scipy.fft import fft2, ifft2, fftfreq
 from scipy.optimize import minimize
 from scipy.special import hermite
-from qiskit import QuantumCircuit, Aer, execute, transpile
+from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector, partial_trace, state_fidelity, process_fidelity
-from qiskit.providers.aer import AerSimulator
-from qiskit.providers.aer.noise import NoiseModel, depolarizing_error, amplitude_damping_error, phase_damping_error
+from qiskit_aer import AerSimulator
+from qiskit_aer.noise import NoiseModel, depolarizing_error, amplitude_damping_error, phase_damping_error
 import time
 import logging
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
 import json
+
+from src.quantum_localization_enhanced import QuantumLocalizationSystem
 
 # Enhanced logging with proper classification handling
 logging.basicConfig(
@@ -194,7 +196,7 @@ class RealisticQuantumSystem:
         
         return noise_model
 
-class DARPAAnalysis:
+class EnhancedDARPAAnalysis:
     """
     Comprehensive DARPA ERIS analysis assessment
     """
@@ -682,8 +684,46 @@ def calculate_darpa_eris_score(problem_analysis: Dict,
                              quantum_advantage: Dict,
                              team_assessment: Dict, 
                              market_analysis: Dict) -> float:
+    """
+    Calculate a plausible DARPA ERIS score based on analysis dictionaries.
+    The score is out of 100, with weightings based on the report generation.
+    """
 
+    scores = {}
+
+    # 1. Problem Definition Score (40 points)
+    # Score based on quantified impact. Let's use total annual cost.
+    # Max score if cost is > $2B.
+    problem_score = min(problem_analysis['quantified_impact']['total_annual_cost'] / 2e9, 1.0) * 40
+    scores['problem'] = problem_score
+
+    # 2. State-of-Art Advancement Score (40 points)
+    # Score based on quantum advantage factor. Max score if factor is > 10x.
+    advantage_score = min(quantum_advantage['accuracy_improvement_factor'] / 10.0, 1.0) * 40
+    scores['advantage'] = advantage_score
+
+    # 3. Team Capability Score (15 points)
+    # Subjective score. Let's check PI's strengths vs weaknesses and hiring plan.
+    pi_assessment = team_assessment['principal_investigator']
+    num_strengths = len(pi_assessment['strength_areas'])
+    num_weaknesses = len(pi_assessment['development_areas'])
+    team_score = (num_strengths / (num_strengths + num_weaknesses))
+    # Bonus for having a good hiring plan
+    if team_assessment['ai_rain_lab_structure']['quantum_hardware_specialist']['required']:
+        team_score += 0.2
+    team_score = min(team_score, 1.0) * 15
+    scores['team'] = team_score
+
+    # 4. Market Impact Score (5 points)
+    # Based on 10-year ROI. Max score if ROI > 2.5
+    roi = market_analysis['investment_requirements']['roi_projections']['10_year_roi']
+    market_score = min(roi / 2.5, 1.0) * 5
+    scores['market'] = market_score
     
+    total_score = sum(scores.values())
+
+    return total_score
+
 class ExperimentalValidationRoadmap:
     """
     Comprehensive experimental validation plan with realistic milestones
@@ -983,6 +1023,39 @@ class ExperimentalValidationRoadmap:
         }
         
         return risk_mitigation
+
+def run_quick_demo() -> bool:
+    """
+    Runs a quick demonstration of the quantum localization system.
+    This function demonstrates the core teleportation fidelity analysis.
+    """
+    logger.info("="*80)
+    logger.info("RUNNING QUICK DEMO: Quantum Localization System")
+    logger.info("="*80)
+
+    try:
+        # Initialize the core system from the enhanced module
+        qls = QuantumLocalizationSystem(grid_size=64, space_bounds=(-5, 5))
+
+        # Run a simplified teleportation fidelity analysis
+        logger.info("Performing quick teleportation fidelity analysis (100 trials)...")
+        teleportation_results = qls.analyze_teleportation_fidelity(num_trials=100)
+
+        mean_fidelity = teleportation_results['mean_fidelity']
+        std_fidelity = teleportation_results['std_fidelity']
+
+        logger.info(f"Quick Demo Complete. Mean Fidelity: {mean_fidelity:.4f} +/- {std_fidelity:.4f}")
+
+        if mean_fidelity > 0.95:
+            logger.info("✅ Quick Demo PASSED: High fidelity teleportation achieved.")
+            return True
+        else:
+            logger.warning("⚠️ Quick Demo NEEDS OPTIMIZATION: Fidelity below target threshold.")
+            return False
+
+    except Exception as e:
+        logger.error(f"❌ Quick Demo FAILED: An error occurred: {str(e)}")
+        return False
 
 def run_enhanced_darpa_analysis():
     """
@@ -1334,7 +1407,7 @@ Team Risk: Key Personnel Retention
 ├── Impact: Medium (delays and knowledge loss)
 ├── Mitigation: Competitive compensation, equity participation, professional development
 ├── Contingency: Rapid hiring and knowledge transfer protocols
-└── Early Warning: Turnover >20% annually, key personnel dissatisfaction
+└── Early Warning: Turnover >20% annually, key personnel expressing dissatisfaction
 
 MARKET RISKS:
 Adoption Risk: Military Adoption Rate
@@ -1515,41 +1588,46 @@ CONTACT: ciao_chris@proton.me
 =======================================================
 END OF ENHANCED DARPA ERIS SUBMISSION
 =======================================================
-        """
-        
-        return report
+"""
+
+    return report
+
 
 # Main execution for enhanced analysis
 if __name__ == "__main__":
     print("DARPA ERIS: Quantum-Enhanced Navigation System")
     print("=" * 70)
     
-    try:
-        # Run enhanced comprehensive analysis
-        results = run_enhanced_darpa_analysis()
+    # Run the quick demo by default
+    run_quick_demo()
+
+    # To run the full enhanced analysis, uncomment the following lines:
+    # try:
+    #     # Run enhanced comprehensive analysis
+    #     results = run_enhanced_darpa_analysis()
         
-        print(f"\n✓ Enhanced DARPA ERIS analysis complete")
-        print(f"Final Enhanced Score: {results['darpa_score']:.1f}/100")
+    #     print(f"\n✓ Enhanced DARPA ERIS analysis complete")
+    #     print(f"Final Enhanced Score: {results['darpa_score']:.1f}/100")
         
-        # Save enhanced results
-        with open('enhanced_darpa_eris_submission.txt', 'w') as f:
-            f.write(results['enhanced_report'])
-        print("📄 Enhanced DARPA ERIS submission saved to 'enhanced_darpa_eris_submission.txt'")
+    #     # Save enhanced results
+    #     with open('enhanced_darpa_eris_submission.txt', 'w') as f:
+    #         f.write(results['enhanced_report'])
+    #     print("📄 Enhanced DARPA ERIS submission saved to 'enhanced_darpa_eris_submission.txt'")
         
-        # Save detailed analysis data
-        with open('enhanced_analysis_data.json', 'w') as f:
-            # Convert non-serializable objects to serializable format
-            serializable_results = {
-                'darpa_score': results['darpa_score'],
-                'quantum_advantage': results['best_results']['quantum_advantage'],
-                'market_analysis': results['best_results']['market_analysis'],
-                'validation_phases': results['validation_roadmap'].validation_phases,
-                'risk_mitigation': results['risk_mitigation']
-            }
-            json.dump(serializable_results, f, indent=2, default=str)
-        print("📊 Detailed analysis data saved to 'enhanced_analysis_data.json'")
+    #     # Save detailed analysis data
+    #     with open('enhanced_analysis_data.json', 'w') as f:
+    #         # Convert non-serializable objects to serializable format
+    #         serializable_results = {
+    #             'darpa_score': results['darpa_score'],
+    #             'quantum_advantage': results['best_results']['quantum_advantage'],
+    #             'market_analysis': results['best_results']['market_analysis'],
+    #             'validation_phases': results['validation_roadmap'].validation_phases,
+    #             'risk_mitigation': results['risk_mitigation']
+    #         }
+    #         json.dump(serializable_results, f, indent=2, default=str)
+    #     print("📊 Detailed analysis data saved to 'enhanced_analysis_data.json'")
         
-    except Exception as e:
-        logger.error(f"Enhanced DARPA ERIS analysis failed: {str(e)}")
-        print(f"\n❌ Enhanced analysis failed: {str(e)}")
-        print("Check logs for detailed error information")
+    # except Exception as e:
+    #     logger.error(f"Enhanced DARPA ERIS analysis failed: {str(e)}")
+    #     print(f"\n❌ Enhanced analysis failed: {str(e)}")
+    #     print("Check logs for detailed error information")
