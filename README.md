@@ -204,99 +204,94 @@ This comprehensive blueprint shows the complete data flow from input coordinates
 
 ### Basic Quantum Localization Demo
 
-```python
-from quantum_localization_demo import QuantumLocalizationSystem, run_quick_demo
-
-# Run quick demonstration
-success = run_quick_demo()
-print(f"Demo Status: {'PASSED' if success else 'NEEDS_OPTIMIZATION'}")
+To run the quick demo, simply execute the main script:
+```bash
+python quantum_localization_demo.py
 ```
+This will run the `run_quick_demo()` function by default and output the results of the teleportation fidelity analysis.
 
 ### Advanced System Analysis
 
+To run the full DARPA analysis pipeline, you need to uncomment the relevant lines in the `if __name__ == "__main__"` block of `quantum_localization_demo.py` and then run the script.
+
 ```python
-from quantum_localization_demo import ProductionQuantumLocalizationSystem, ExperimentalPlatform
+# In quantum_localization_demo.py, modify the main block:
 
-# Initialize system for superconducting platform
-qls = ProductionQuantumLocalizationSystem(
-    grid_size=128, 
-    experimental_platform=ExperimentalPlatform.SUPERCONDUCTING
-)
+if __name__ == "__main__":
+    print("DARPA ERIS: Quantum-Enhanced Navigation System")
+    print("=" * 70)
 
-# Run comprehensive performance analysis
-performance = qls.comprehensive_system_test(num_test_cases=100)
+    # To run the full enhanced analysis, uncomment the following lines:
+    try:
+        # Run enhanced comprehensive analysis
+        results = run_enhanced_darpa_analysis()
 
-print(f"Mean Fidelity: {performance.mean_fidelity:.4f}")
-print(f"Quantum Advantage: {performance.quantum_advantage_factor:.2f}x")
-print(f"Position Accuracy: {performance.position_accuracy:.4f}")
+        print(f"\n✓ Enhanced DARPA ERIS analysis complete")
+        # ... and so on
+    except Exception as e:
+        logger.error(f"Enhanced DARPA ERIS analysis failed: {str(e)}")
+
+```
+Then run the script:
+```bash
+python quantum_localization_demo.py
 ```
 
 ### Vibrational State Encoding
 
+This example demonstrates how to use the `QuantumLocalizationTheory` class to encode a position into a superposition of vibrational states.
+
 ```python
-from quantum_localization_demo import EnhancedQuantumVibrationalEncoder
+from quantum_localization_demo import QuantumLocalizationTheory
 
-# Initialize encoder
-encoder = EnhancedQuantumVibrationalEncoder(max_fock_state=15)
+# Initialize the theoretical model
+theory = QuantumLocalizationTheory()
 
-# Encode target position
-target_position = 2.5  # spatial units
-result = encoder.encode_position_with_validation(target_position)
+# Encode a target position
+position = 2.0
+coeffs = theory.vibrational_coordinate_encoding(position, max_n=15)
 
-print(f"Target Position: {result['target_position']}")
-print(f"Achieved Position: {result['position_expected']:.4f}")
-print(f"Encoding Error: {result['encoding_error']:.6f}")
-print(f"Quantum Fisher Information: {result['quantum_fisher_information']:.3f}")
+print(f"Coefficients for position {position}:")
+print(coeffs)
+
+# Calculate theoretical uncertainty
+uncertainty = theory.theoretical_position_uncertainty(coeffs)
+print(f"Theoretical position uncertainty: {uncertainty:.4f}")
 ```
 
 ### Quantum Teleportation Analysis
 
+This example shows how to use the `QuantumLocalizationSystem` from the `src` module to analyze teleportation fidelity.
+
 ```python
-from quantum_localization_demo import RobustQuantumRangingProtocol, ExperimentalParameters
+from src.quantum_localization_enhanced import QuantumLocalizationSystem
 
-# Setup experimental parameters
-params = ExperimentalParameters(
-    platform=ExperimentalPlatform.TRAPPED_IONS,
-    coherence_time=10000.0,  # 10ms
-    gate_fidelity=0.999,
-    readout_fidelity=0.995,
-    temperature=0.001,  # mK
-    noise_level=0.001
-)
+# Initialize the system
+qls = QuantumLocalizationSystem(grid_size=64)
 
-# Initialize ranging protocol
-ranging = RobustQuantumRangingProtocol(num_qubits=6, experimental_params=params)
+# Analyze teleportation fidelity
+results = qls.analyze_teleportation_fidelity(num_trials=200)
 
-# Perform ranging measurement
-target_distance = 5.0  # meters
-result = ranging.enhanced_phase_estimation(
-    target_distance=target_distance,
-    wavelength=1.55e-6,  # 1550nm
-    num_shots=10000
-)
-
-print(f"Target Distance: {result['target_distance']:.3f} m")
-print(f"Estimated Distance: {result['estimated_distance']:.6f} m")
-print(f"Ranging Error: {result['ranging_error']:.6f} m")
-print(f"Quantum Advantage: {result['quantum_advantage_factor']:.2f}x")
+print(f"Mean Teleportation Fidelity: {results['mean_fidelity']:.4f}")
 ```
 
 ### Complete DARPA Analysis Pipeline
 
+The complete DARPA analysis is executed by the `run_enhanced_darpa_analysis` function in `quantum_localization_demo.py`.
+
 ```python
-from quantum_localization_demo import run_production_darpa_analysis
+from quantum_localization_demo import run_enhanced_darpa_analysis
 
 # Execute full production analysis
-results = run_production_darpa_analysis()
+results = run_enhanced_darpa_analysis()
 
 # Access results
 best_system = results['best_system']
-best_performance = results['best_performance']
-darpa_report = results['darpa_report']
+darpa_score = results['darpa_score']
+darpa_report = results['enhanced_report']
 
-print(f"Best Platform: {results['best_platform'].value}")
-print(f"System Fidelity: {best_performance.mean_fidelity:.4f}")
-print(f"TRL Level: {best_system._assess_technology_readiness_level(best_performance)}")
+print(f"Best Platform: {best_system.platform}")
+print(f"DARPA Score: {darpa_score:.2f}")
 
 # Print full DARPA report
 print("\n" + "="*80)

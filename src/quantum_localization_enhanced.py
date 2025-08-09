@@ -15,12 +15,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import fft2, ifft2, fftfreq
 from scipy.optimize import minimize
-from qiskit import QuantumCircuit, Aer, execute, transpile
+from qiskit import QuantumCircuit
 from qiskit.visualization import plot_bloch_multivector, plot_histogram
 from qiskit.quantum_info import Statevector, partial_trace, state_fidelity, process_fidelity
 from qiskit.quantum_info import random_statevector, DensityMatrix
-from qiskit.providers.aer import AerSimulator
-from qiskit.providers.aer.noise import NoiseModel, depolarizing_error
+from qiskit_aer import AerSimulator
+from qiskit_aer.noise import NoiseModel, depolarizing_error
 import seaborn as sns
 from typing import Tuple, List, Dict, Optional
 import logging
