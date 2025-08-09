@@ -199,7 +199,6 @@ This comprehensive blueprint shows the complete data flow from input coordinates
 - **Military applications and DARPA assessment**
 - **Error handling and system monitoring**
 
-You can copy this Mermaid code to modify the blueprint or create variations for specific use cases.
 
 ## 🔬 Code Implementation Examples
 
