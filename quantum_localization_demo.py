@@ -207,6 +207,7 @@ def run_enhanced_darpa_analysis():
     }
 
 from darpa_proposal_generator.report import generate_enhanced_darpa_report
+from comparative_analysis import run_full_comparison
 
 
 # Main execution for enhanced analysis
@@ -217,12 +218,26 @@ if __name__ == "__main__":
         action='store_true',
         help='Run the full, enhanced DARPA analysis.'
     )
+    parser.add_argument(
+        '--full-comparison',
+        action='store_true',
+        help='Run the full hardware comparison and generate a report.'
+    )
     args = parser.parse_args()
 
     print("DARPA ERIS: Quantum-Enhanced Navigation System")
     print("=" * 70)
 
-    if args.full_analysis:
+    if args.full_comparison:
+        try:
+            run_full_comparison()
+            print("\n✓ Full hardware comparison complete.")
+            print("📄 Report saved to 'hardware_comparison_report.pdf'")
+        except Exception as e:
+            logger.error(f"Full hardware comparison failed: {str(e)}")
+            print(f"\n❌ Full hardware comparison failed: {str(e)}")
+
+    elif args.full_analysis:
         try:
             # Run enhanced comprehensive analysis
             results = run_enhanced_darpa_analysis()

@@ -1,0 +1,19 @@
+{
+  "name": "Trapped Ions",
+  "encoding_method": "vibrational_modes",
+  "parameters": {
+    "t1_time": 10000.0,
+    "t2_time": 1000.0,
+    "gate_fidelity": {
+      "single_qubit": 0.9999,
+      "two_qubit": 0.999
+    },
+    "readout_error": 0.001
+  },
+  "literature_data": {
+    "fidelity_achieved": 0.999,
+    "positional_uncertainty": 0.05,
+    "source": "Cirac, J. I., & Zoller, P. (1995). Quantum Computations with Cold Trapped Ions. Physical Review Letters, 74(20), 4091–4094.",
+    "doi": "10.1103/PhysRevLett.74.4091"
+  }
+}
