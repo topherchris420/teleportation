@@ -111,15 +111,18 @@ class QuantumLocalizationSystem:
 
     def analyze_teleportation_fidelity(self,
                                      num_trials: int = 1000,
+                                     noise_level: Optional[float] = None,
                                      noise_model: Optional[NoiseModel] = None,
                                      readout_error: Optional[float] = None) -> Dict:
         """
         Comprehensive fidelity analysis of quantum teleportation with noise.
+        This corrected version uses statevector simulation for accurate fidelity calculation.
 
         Args:
             num_trials: Number of Monte Carlo trials.
+            noise_level: If provided, creates a depolarizing noise model.
             noise_model: Qiskit noise model for simulation.
-            readout_error: Probability of a readout error.
+            readout_error: (Not used in this corrected implementation) Probability of a readout error.
 
         Returns:
             Dictionary containing fidelity statistics and analysis.
@@ -127,7 +130,22 @@ class QuantumLocalizationSystem:
         fidelities = []
         state_params_list = []
 
-        logger.info(f"Running teleportation fidelity analysis with {num_trials} trials")
+        logger.info(f"Running corrected teleportation fidelity analysis with {num_trials} trials")
+
+        # Create noise model from noise_level if provided
+        if noise_level is not None and noise_model is None:
+            noise_model = NoiseModel()
+            # Apply depolarizing error to all single and two-qubit gates
+            error_1 = depolarizing_error(noise_level, 1)
+            error_2 = depolarizing_error(noise_level, 2)
+            noise_model.add_all_qubit_quantum_error(error_1, ['u', 'h'])
+            noise_model.add_all_qubit_quantum_error(error_2, ['cx', 'cz'])
+
+        # Create a simulator instance for this analysis
+        sim = AerSimulator()
+        if noise_model:
+            sim.set_options(noise_model=noise_model)
+
 
         for _ in range(num_trials):
             # Generate random target state parameters
@@ -142,55 +160,36 @@ class QuantumLocalizationSystem:
             qc_original.u(theta, phi, lam, 0)
             original_state = Statevector.from_instruction(qc_original)
 
-            # Create teleportation circuit
-            qc_teleport = self.create_enhanced_teleportation_circuit(params)
+            # Create teleportation circuit for statevector simulation (no measurements)
+            # This circuit implements the state transfer directly.
+            qc_teleport = QuantumCircuit(3)
+            qc_teleport.u(params['theta'], params['phi'], params['lambda'], 0)
+            qc_teleport.barrier()
+            qc_teleport.h(1)
+            qc_teleport.cx(1, 2)
+            qc_teleport.barrier()
+            qc_teleport.cx(0, 1)
+            qc_teleport.h(0)
+            qc_teleport.barrier()
+            qc_teleport.cx(1, 2)
+            qc_teleport.cz(0, 2)
+            qc_teleport.save_state()
 
-            # Simulate with noise
-            if noise_model:
-                self.simulator.set_options(noise_model=noise_model)
-            
             # Run the simulation
-            result = self.simulator.run(qc_teleport, shots=1024).result()
-            counts = result.get_counts(qc_teleport)
+            result = sim.run(qc_teleport).result()
+            data = result.data(0)
+            if 'statevector' in data:
+                final_state = data['statevector']
+            elif 'density_matrix' in data:
+                final_state = data['density_matrix']
+            else:
+                raise KeyError("Could not find 'statevector' or 'density_matrix' in result data.")
 
-            # Manual readout error simulation
-            if readout_error:
-                new_counts = {}
-                for key, value in counts.items():
-                    for _ in range(value):
-                        new_key = ""
-                        for bit in key:
-                            if np.random.rand() < readout_error:
-                                new_key += '1' if bit == '0' else '0'
-                            else:
-                                new_key += bit
-                        new_counts[new_key] = new_counts.get(new_key, 0) + 1
-                counts = new_counts
-
-            # Reconstruct Bob's state from counts
-            # The teleported qubit is the last one (qubit 2)
-            bob_counts = {'0': 0, '1': 0}
-            for state, count in counts.items():
-                bob_bit = state[0] # Qiskit has reversed bit order
-                if bob_bit == '0':
-                    bob_counts['0'] += count
-                else:
-                    bob_counts['1'] += count
+            # The teleported state is on qubit 2. Qiskit's qubit order is [q2, q1, q0].
+            # We need to trace out qubits 0 and 1 to get the state of qubit 2.
+            teleported_density_matrix = partial_trace(final_state, [0, 1])
             
-            total_shots = bob_counts['0'] + bob_counts['1']
-            if total_shots == 0:
-                fidelities.append(0)
-                continue
-
-            prob_0 = bob_counts['0'] / total_shots
-            prob_1 = bob_counts['1'] / total_shots
-            
-            # This reconstruction is a simplification. For a mixed state, we'd construct a DensityMatrix.
-            # For simplicity, we assume the output is a pure state and calculate fidelity.
-            # This is not perfect, but gives a good measure of performance.
-            reconstructed_state = np.sqrt(prob_0) * Statevector.from_label('0') + np.sqrt(prob_1) * Statevector.from_label('1')
-            
-            fidelity = state_fidelity(original_state, reconstructed_state)
+            fidelity = state_fidelity(original_state, teleported_density_matrix)
             fidelities.append(fidelity)
 
         fidelities = np.array(fidelities)
@@ -239,7 +238,7 @@ class QuantumLocalizationSystem:
                 psi_mode = (strength * np.exp(-((self.X - x0)**2 + (self.Y - y0)**2) / (4 * sigma**2)) *
                            np.exp(1j * (kx * self.X + ky * self.Y)))
                 psi_total += psi_mode
-                mode_contributions.append({'wavefunction': psi_mode, 'probability': np.abs(psi_mode)**2})
+                mode_contributions.append({'wavefunction': psi_mode, 'probability': np.abs(psi_mode)**2, 'frequency': (kx, ky)})
 
         elif encoding_method == 'dual_rail':
             sigma = 0.5
