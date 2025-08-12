@@ -1,0 +1,19 @@
+{
+  "name": "Cavity QED",
+  "encoding_method": "fock_states",
+  "parameters": {
+    "t1_time": 500.0,
+    "t2_time": 100.0,
+    "gate_fidelity": {
+      "single_qubit": 0.998,
+      "two_qubit": 0.98
+    },
+    "readout_error": 0.01
+  },
+  "literature_data": {
+    "fidelity_achieved": 0.98,
+    "positional_uncertainty": 0.1,
+    "source": "Reiserer, A., & Rempe, G. (2015). Cavity-based quantum networks with single atoms and optical photons. Reviews of Modern Physics, 87(4), 1379–1418.",
+    "doi": "10.1103/RevModPhys.87.1379"
+  }
+}

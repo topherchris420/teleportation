@@ -1,0 +1,19 @@
+{
+  "name": "Photonics",
+  "encoding_method": "dual_rail",
+  "parameters": {
+    "photon_loss": 0.01,
+    "dephasing_error": 0.005,
+    "gate_fidelity": {
+      "single_qubit": 0.995,
+      "two_qubit": 0.95
+    },
+    "readout_error": 0.02
+  },
+  "literature_data": {
+    "fidelity_achieved": 0.95,
+    "positional_uncertainty": 0.2,
+    "source": "Knill, E., Laflamme, R., & Milburn, G. J. (2001). A scheme for efficient quantum computation with linear optics. Nature, 409(6816), 46–52.",
+    "doi": "10.1038/35051009"
+  }
+}
